@@ -41,3 +41,11 @@ void edata_cat(edata * e, char * txt, size_t size)
 	e->len+=size;
 	e->data[e->len] = 0;
 }
+
+time_t unix_time(const char * timestr)
+{
+	struct tm time;
+
+	strptime(timestr, "%FT%T%z", &time);
+	return mktime(&time);
+}

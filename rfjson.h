@@ -38,6 +38,5 @@ jobj *    jobj_array_item(const jobj * obj, int at);
 jobj *  jobj_parse(const char * json_str);
 void    jobj_free(jobj * obj);
 
-time_t  unix_time(const char * timestr);
 #endif
 //RFJSON_H

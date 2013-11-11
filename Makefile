@@ -1,7 +1,7 @@
 # Variables
 VER=0.1.0
-OBJS=rfhttp.o rfjson.o
-HEADERS=rfhttp.h rfjson.h
+OBJS=rfhttp.o rfjson.o rfutils.o
+HEADERS=rfhttp.h rfjson.h rfutils.h
 MY_CFLAGS=-fPIC -I.
 SONAME=librest-friend.so
 PREFIX ?= /usr/local

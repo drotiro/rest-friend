@@ -1,14 +1,8 @@
 #include "rfjson.h"
+#include "rfutils.h"
+
 #include <string.h>
 #include <stdio.h>
-
-time_t unix_time(const char * timestr)
-{
-	struct tm time;
-	
-	strptime(timestr, "%FT%T%z", &time);
-	return mktime(&time);
-}
 
 /* predeclaration */
 jobj *  jobj_new();

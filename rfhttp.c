@@ -28,14 +28,14 @@ void set_conn_reuse(int reuse)
 }
 
 /* Take care of Authentication header */
-void update_auth_header(const char * auth_token)
+void set_auth_header(const char * auth_header)
 {
 	struct curl_slist * hnew = NULL;
-	char header[96] = "Authorization: Bearer ";
+	//char header[96] = "Authorization: Bearer ";
 
-	if(auth_token) {
-		strncat(header, auth_token, 32);
-		hnew = curl_slist_append(hnew, header);
+	if(auth_header) {
+		//strncat(header, auth_token, 32);
+		hnew = curl_slist_append(hnew, auth_header);
 	}
 
 	if(headers) curl_slist_free_all(headers);
