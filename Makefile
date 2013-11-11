@@ -32,7 +32,7 @@ $(PKGCONF): $(PKGCONF).in
 		-e 's:@PREFIX@:$(PREFIX):g' \
 		-e 's:@LIBDIR@:$(LIBDIR):g' \
 		-e 's:@INCLUDEDIR@:$(INCDIR):g' \
-		-e 's:@PACKAGE_NAME@:libapp:g' \
+		-e 's:@PACKAGE_NAME@:rest-friend:g' \
 		-e 's:@PACKAGE_VERSION@:$(VER):g' \
 		$< > $@
 

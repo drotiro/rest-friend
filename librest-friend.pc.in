@@ -3,7 +3,7 @@ libdir=@LIBDIR@
 includedir=@INCLUDEDIR@
 
 Name: @PACKAGE_NAME@
-Description: Common routines used by applications
+Description: A friend to help you build REST clients in C
 Version: @PACKAGE_VERSION@
-Libs: '-L${libdir}' -lapp
+Libs: '-L${libdir}' -l@PACKAGE_NAME@
 Cflags: '-I${includedir}'
