@@ -1,15 +1,15 @@
 # Variables
 VER=0.1.0
 OBJS=rfhttp.o rfjson.o rfutils.o
+PKGNAME=rest-friend
 HEADERS=rfhttp.h rfjson.h rfutils.h
 MY_CFLAGS=-fPIC -I.
 SONAME=librest-friend.so
 PREFIX ?= /usr/local
-INCDIR=$(PREFIX)/include
-INCAPPDIR=$(PREFIX)/include/libapp
+INCDIR=$(PREFIX)/include/$(PKGNAME)
 LIBDIR=$(PREFIX)/lib
 PKGCONFIGDIR=$(LIBDIR)/pkgconfig
-PKGCONF=librest-friend.pc
+PKGCONF=rest-friend.pc
 INSTALL_S = install -s
 LN_SF = ln -sf
 
@@ -32,7 +32,7 @@ $(PKGCONF): $(PKGCONF).in
 		-e 's:@PREFIX@:$(PREFIX):g' \
 		-e 's:@LIBDIR@:$(LIBDIR):g' \
 		-e 's:@INCLUDEDIR@:$(INCDIR):g' \
-		-e 's:@PACKAGE_NAME@:rest-friend:g' \
+		-e 's:@PACKAGE_NAME@:$(PKGNAME):g' \
 		-e 's:@PACKAGE_VERSION@:$(VER):g' \
 		$< > $@
 
@@ -43,7 +43,7 @@ install: $(SONAME) $(PKGCONF)
 	install -d '$(LIBDIR)'
 	$(INSTALL_S) -t '$(LIBDIR)' $(SONAME).$(VER)
 	$(LN_SF) $(SONAME).$(VER) '$(LIBDIR)'/$(SONAME)
-	install -d '$(INCAPPDIR)'
-	install -m 644 -t '$(INCAPPDIR)' $(HEADERS)
+	install -d '$(INCDIR)'
+	install -m 644 -t '$(INCDIR)' $(HEADERS)
 	install -d '$(PKGCONFIGDIR)'
 	install -t '$(PKGCONFIGDIR)' $(PKGCONF)
