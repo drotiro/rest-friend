@@ -14,7 +14,7 @@ typedef struct edata_t {
 void    edata_init(edata * e);
 void    edata_cat(edata * e, char * txt, size_t size);
 
-off_t    filesize(const char * localpath);
+off_t   filesize(const char * localpath);
 char *  pathappend(const char * one, const char * two);      
 
 time_t  unix_time(const char * timestr);

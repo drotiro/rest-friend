@@ -1,15 +1,20 @@
 # Variables
 VER=0.1.0
 OBJS=rfhttp.o rfjson.o rfutils.o
-PKGNAME=rest-friend
 HEADERS=rfhttp.h rfjson.h rfutils.h
-MY_CFLAGS=-fPIC -I.
+MY_CFLAGS=-fPIC -I. $(shell pkg-config ${PKGDEPS} --cflags)
+MY_LDFLAGS=$(shell pkg-config ${PKGDEPS} --libs)
 SONAME=librest-friend.so
+# Paths
 PREFIX ?= /usr/local
 INCDIR=$(PREFIX)/include/$(PKGNAME)
 LIBDIR=$(PREFIX)/lib
 PKGCONFIGDIR=$(LIBDIR)/pkgconfig
-PKGCONF=rest-friend.pc
+# Pkg-config stuff
+PKGNAME=rest-friend
+PKGCONF=$(PKGNAME).pc
+PKGDEPS=libapp libjson libcurl
+# Install commands
 INSTALL_S = install -s
 LN_SF = ln -sf
 
@@ -20,12 +25,15 @@ $(SONAME): $(SONAME).$(VER)
 	$(LN_SF) $(SONAME).$(VER) $(SONAME)
 
 # Dependencies
+rfhttp.o: rfhttp.c rfhttp.h rfutils.h
+rfjson.o: rfjson.c rfjson.h rfutils.h
+rfutils.o: rfutils.c rfutils.h
 
-$(SONAME).$(VER):	$(OBJS)
-	$(CC) $(MY_CFLAGS) $(CFLAGS) $(LDFLAGS) -Wl,-soname=$(SONAME) -shared  -o $@ $(OBJS)
+$(SONAME).$(VER): $(OBJS)
+	$(CC) -shared $(MY_CFLAGS) $(CFLAGS) -Wl,-soname=$(SONAME) -o $@ $(OBJS) $(LDFLAGS) $(MY_LDFLAGS)
 
 .c.o:
-	$(CC) $(MY_CFLAGS) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+	$(CC) $(MY_CFLAGS) $(CFLAGS) -c $< -o $@
 
 $(PKGCONF): $(PKGCONF).in
 	sed \
