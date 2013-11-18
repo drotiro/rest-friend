@@ -38,6 +38,7 @@ long   http_delete(const char * url);
 
 /* Authentication */
 void set_auth_header(const char * auth_header);
+void set_auth_info(const char * user_pwd);
 
 /* Misc */
 void set_conn_reuse(int reuse);

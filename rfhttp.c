@@ -14,6 +14,7 @@
 #define MAXBUF 4096
 
 static struct curl_slist *headers = NULL;
+static char * auth_user = NULL;
 /* Don't share this between threads! */
 static CURL * conn = NULL; 
 static int conn_reuse = 0;
@@ -31,15 +32,18 @@ void set_conn_reuse(int reuse)
 void set_auth_header(const char * auth_header)
 {
 	struct curl_slist * hnew = NULL;
-	//char header[96] = "Authorization: Bearer ";
 
 	if(auth_header) {
-		//strncat(header, auth_token, 32);
 		hnew = curl_slist_append(hnew, auth_header);
 	}
 
 	if(headers) curl_slist_free_all(headers);
 	headers = hnew;
+}
+
+void set_auth_info(const char * user_pwd)
+{
+	auth_user = user_pwd;
 }
 
 /* cURL initialization with common options */
@@ -56,6 +60,7 @@ CURL * my_curl_init(const char * url)
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 	curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
 	if(headers) curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+	if(auth_user) curl_easy_setopt(curl, CURLOPT_USERPWD, auth_user);
 	
 	if(conn_reuse) conn = curl;
 	return curl;
