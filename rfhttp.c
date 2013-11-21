@@ -177,11 +177,12 @@ void post_add(postdata_t buf, const char * name, const char * val)
 		CURLFORM_END);
 }
 
-long post_addfile(postdata_t pd, const char * name, const char * tmpfile)
+long post_addfile(postdata_t pd, const char * name, const char * fname,
+	const char * tmpfile)
 {
   curl_formadd(&pd->post, &pd->last,
-    CURLFORM_COPYNAME, "new_file0",
-    CURLFORM_FILENAME, name,
+    CURLFORM_COPYNAME, name,
+    CURLFORM_FILENAME, fname,
     CURLFORM_FILE, tmpfile,
     CURLFORM_END);
   return 0;

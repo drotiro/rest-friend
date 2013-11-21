@@ -26,7 +26,8 @@ int	http_fetch_file(const char * url, const char * dest, int append);
 postdata_t post_init();
 void       post_free(postdata_t postdata);
 void       post_add(postdata_t buf, const char * name, const char * val);
-long       post_addfile(postdata_t rbuf, const char * name, const char * tmpfile);
+long       post_addfile(postdata_t rbuf, const char * name, const char * fname,
+			const char * tmpfile);
 char *     post_addfile_part(postdata_t rbuf, const char * name,
         		const char * tmpfile, size_t offset, size_t len);
 
