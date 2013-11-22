@@ -19,11 +19,11 @@ INSTALL_S = install -s
 LN_SF = ln -sf
 
 # Main target
-all: $(SONAME) $(PKGCONF)
+all: check $(SONAME) $(PKGCONF)
 
 $(SONAME): $(SONAME).$(VER)
 	$(LN_SF) $(SONAME).$(VER) $(SONAME)
-
+	
 # Dependencies
 rfhttp.o: rfhttp.c rfhttp.h rfutils.h
 rfjson.o: rfjson.c rfjson.h rfutils.h
@@ -55,3 +55,6 @@ install: $(SONAME) $(PKGCONF)
 	install -m 644 -t '$(INCDIR)' $(HEADERS)
 	install -d '$(PKGCONFIGDIR)'
 	install -t '$(PKGCONFIGDIR)' $(PKGCONF)
+
+check:
+	$(shell pkg-config ${PKGDEPS} --exists --print-errors)
