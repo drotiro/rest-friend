@@ -44,8 +44,13 @@ void edata_cat(edata * e, char * txt, size_t size)
 
 time_t unix_time(const char * timestr)
 {
+	return unix_time_format(timestr, "%F%T%z");
+}
+
+time_t unix_time_format(const char * timestr, const char * format)
+{
 	struct tm time;
 
-	strptime(timestr, "%FT%T%z", &time);
+	strptime(timestr, format, &time);
 	return mktime(&time);
 }
