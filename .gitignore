@@ -1,6 +1,6 @@
 *.o
-*.so
-*.so.*
+*.a
+*.so*
 *.pc
 .cproject
 .project

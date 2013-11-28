@@ -2,8 +2,9 @@
 VER=0.1.0
 OBJS=rfhttp.o rfjson.o rfutils.o
 HEADERS=rfhttp.h rfjson.h rfutils.h
-MY_CFLAGS=-fPIC -I. $(shell pkg-config ${PKGDEPS} --cflags)
-MY_LDFLAGS=$(shell pkg-config ${PKGDEPS} --libs)
+FLAGS?=-fPIC -I. $(shell pkg-config ${PKGDEPS} --cflags)
+LIBS?=$(shell pkg-config ${PKGDEPS} --libs)
+ANAME=librest-friend.a
 SONAME=librest-friend.so
 # Paths
 PREFIX ?= /usr/local
@@ -19,10 +20,13 @@ INSTALL_S = install -s
 LN_SF = ln -sf
 
 # Main target
-all: check $(SONAME) $(PKGCONF)
+all: check $(ANAME) $(SONAME) $(PKGCONF)
 
 $(SONAME): $(SONAME).$(VER)
 	$(LN_SF) $(SONAME).$(VER) $(SONAME)
+	
+$(ANAME): $(OBJS)
+	$(AR) rc $@ $+
 	
 # Dependencies
 rfhttp.o: rfhttp.c rfhttp.h rfutils.h
@@ -30,10 +34,10 @@ rfjson.o: rfjson.c rfjson.h rfutils.h
 rfutils.o: rfutils.c rfutils.h
 
 $(SONAME).$(VER): $(OBJS)
-	$(CC) -shared $(MY_CFLAGS) $(CFLAGS) -Wl,-soname=$(SONAME) -o $@ $(OBJS) $(LDFLAGS) $(MY_LDFLAGS)
+	$(CC) -shared $(FLAGS) $(CFLAGS) -Wl,-soname=$(SONAME) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
 
 .c.o:
-	$(CC) $(MY_CFLAGS) $(CFLAGS) -c $< -o $@
+	$(CC) $(FLAGS) $(CFLAGS) -c $< -o $@
 
 $(PKGCONF): $(PKGCONF).in
 	sed \
@@ -49,6 +53,7 @@ clean:
 
 install: $(SONAME) $(PKGCONF)
 	install -d '$(LIBDIR)'
+	$(INSTALL_S) -t '$(LIBDIR)' $(ANAME)
 	$(INSTALL_S) -t '$(LIBDIR)' $(SONAME).$(VER)
 	$(LN_SF) $(SONAME).$(VER) '$(LIBDIR)'/$(SONAME)
 	install -d '$(INCDIR)'
