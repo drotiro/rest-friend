@@ -34,7 +34,7 @@ rfjson.o: rfjson.c rfjson.h rfutils.h
 rfutils.o: rfutils.c rfutils.h
 
 $(SONAME).$(VER): $(OBJS)
-	$(CC) -shared $(FLAGS) $(CFLAGS) -Wl,-soname=$(SONAME) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
+	$(CC) -shared $(FLAGS) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
 
 .c.o:
 	$(CC) $(FLAGS) $(CFLAGS) -c $< -o $@
