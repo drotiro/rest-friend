@@ -3,6 +3,7 @@
 **************************/
 
 #include <curl/curl.h>
+#include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
 #include <syslog.h>
@@ -273,3 +274,79 @@ char * http_postfile(const char * url, postdata_t pd)
 
 	return e.data;
 }
+
+/* 
+   SSL libraries are not thread safe
+   let's take care of this ar required
+   by OpenSSL & co.
+   
+   @see: https://github.com/drotiro/rest-friend/issues/1
+*/
+
+static pthread_mutex_t * oplocks;
+
+#ifdef USE_OPENSSL
+#include <openssl/crypto.h>
+
+static void lock_callback(int mode, int type, char *file, int line)
+{
+        syslog(LOG_DEBUG, "%s type %d at %s:%d", (mode & CRYPTO_LOCK ? "  LOCK" : "UNLOCK"), type, file, line);
+        if (mode & CRYPTO_LOCK) {
+		pthread_mutex_lock(&(oplocks[type]));
+	} else {
+		pthread_mutex_unlock(&(oplocks[type]));
+	}
+}
+ 
+static unsigned long thread_id(void)
+{
+  unsigned long ret;
+ 
+  ret=(unsigned long)pthread_self();
+  return(ret);
+}
+
+
+void http_threads_init()
+{
+	int i;
+
+	oplocks = (pthread_mutex_t *) 
+			OPENSSL_malloc(CRYPTO_num_locks() * sizeof(pthread_mutex_t));
+	for (i=0; i<CRYPTO_num_locks(); i++) {
+		pthread_mutex_init(&(oplocks[i]),NULL);
+  	}
+ 
+	CRYPTO_set_id_callback((unsigned long (*)())thread_id);
+	CRYPTO_set_locking_callback((void (*)())lock_callback);
+}
+
+void http_threads_cleanup()
+{
+	int i;
+
+	CRYPTO_set_locking_callback(NULL);
+	for (i=0; i<CRYPTO_num_locks(); i++)
+		pthread_mutex_destroy(&(oplocks[i]));
+ 
+	OPENSSL_free(oplocks);
+}
+
+#endif
+ 
+#ifdef USE_GNUTLS
+#include <gcrypt.h>
+#include <errno.h>
+ 
+GCRY_THREAD_OPTION_PTHREAD_IMPL;
+ 
+void http_threads_init()
+{
+	gcry_control(GCRYCTL_SET_THREAD_CBS);
+}
+ 
+#NOOP
+void http_threads_cleanup() {}
+
+#endif
+ 

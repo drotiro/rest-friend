@@ -17,10 +17,17 @@ struct postdata {
 };
 typedef struct postdata * postdata_t;
 
+
+/* Initialization and threading issues */
+void	http_threads_init();
+void	http_threads_cleanup();
+
+
 /* Fetching (GET) of pages and files */
 char *	http_fetch(const char * url);
 char *	http_fetchf(const char * fmt, ...);
 int	http_fetch_file(const char * url, const char * dest, int append);
+
 
 /* Data POSTing and other http requests */
 postdata_t post_init();
@@ -37,9 +44,11 @@ char * http_post_fields(const char * url, const char * fields);
 char * http_put_fields(const char * url, const char * fields);
 long   http_delete(const char * url);
 
+
 /* Authentication */
 void set_auth_header(const char * auth_header);
 void set_auth_info(const char * user_pwd);
+
 
 /* Misc */
 void set_conn_reuse(int reuse);
