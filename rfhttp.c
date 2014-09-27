@@ -319,6 +319,8 @@ void http_threads_init()
  
 	CRYPTO_set_id_callback((unsigned long (*)())thread_id);
 	CRYPTO_set_locking_callback((void (*)())lock_callback);
+	
+	curl_global_init(CURL_GLOBAL_ALL);  
 }
 
 void http_threads_cleanup()
@@ -343,6 +345,8 @@ GCRY_THREAD_OPTION_PTHREAD_IMPL;
 void http_threads_init()
 {
 	gcry_control(GCRYCTL_SET_THREAD_CBS);
+
+	curl_global_init(CURL_GLOBAL_ALL);  
 }
  
 #NOOP
